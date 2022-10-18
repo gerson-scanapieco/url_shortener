@@ -1,0 +1,19 @@
+version: "3.7"
+services:
+  url_shortener:
+    image: url_shortener:release
+    env_file:
+      - .env
+    depends_on:
+      - db
+    ports:
+      - "4000:4000"
+
+  db:
+    image: postgres:15.0-alpine3.16
+    container_name: url_shortener_pg
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
