@@ -47,20 +47,6 @@ defmodule UrlShortener.ShortenedUrlTest do
     end
   end
 
-  describe "constraints" do
-    test "fails persistence when the original_url is already persisted" do
-      {:ok, _} =
-        ShortenedUrl.changeset(%{original_url: "http://google.com"})
-        |> Repo.insert()
-
-      {:error, changeset} =
-        ShortenedUrl.changeset(%{original_url: "http://google.com"})
-        |> Repo.insert()
-
-      assert errors_on(changeset) == %{original_url: ["has already been taken"]}
-    end
-  end
-
   describe "changeset/1" do
     test "generates a unique slug for the original_url during persistence" do
       {:ok, shortened_url} =
@@ -72,8 +58,16 @@ defmodule UrlShortener.ShortenedUrlTest do
   end
 
   describe "generate_slug/1" do
-    test "generates a unique 22 chars slug for the given string" do
-      assert String.length(ShortenedUrl.generate_slug("http://google.com")) == 22
+    # Although MD5 always generates a 16 bytes digest, encoding it to
+    # Base64 increases its size.
+    test "generates a unique 22 bytes slug for the given string" do
+      assert byte_size(ShortenedUrl.generate_slug("http://very-long-domain-name.com")) == 22
+      assert byte_size(ShortenedUrl.generate_slug("http://a.com")) == 22
+
+      assert byte_size(
+               ShortenedUrl.generate_slug("http://google.com?query=1&query=2&query=3&query=4")
+             ) ==
+               22
     end
 
     test "the same input URL generates the same slug" do

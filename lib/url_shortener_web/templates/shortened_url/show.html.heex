@@ -1,0 +1,15 @@
+<h1>Show Shortened url</h1>
+
+<ul>
+  <li>
+    <strong>Shortened url:</strong>
+    <%= link shortened_link(@shortened_url), to: Routes.redirection_url_path(@conn, :redirection, @shortened_url.slug) %>
+  </li>
+
+  <li>
+    <strong>Original url:</strong>
+    <%= @shortened_url.original_url %>
+  </li>
+</ul>
+
+<span><%= link "Back", to: Routes.shortened_url_path(@conn, :new) %></span>

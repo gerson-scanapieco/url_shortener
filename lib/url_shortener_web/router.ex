@@ -17,13 +17,12 @@ defmodule UrlShortenerWeb.Router do
   scope "/", UrlShortenerWeb do
     pipe_through :browser
 
-    get "/", PageController, :index
-  end
+    get "/", ShortenedUrlController, :new
 
-  # Other scopes may use custom stacks.
-  # scope "/api", UrlShortenerWeb do
-  #   pipe_through :api
-  # end
+    resources "/shortened_urls", ShortenedUrlController, only: [:new, :show, :create]
+
+    get "/:slug", ShortenedUrlController, :redirection, as: :redirection_url
+  end
 
   # Enables LiveDashboard only for development
   #
