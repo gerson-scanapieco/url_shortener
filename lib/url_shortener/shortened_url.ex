@@ -6,6 +6,8 @@ defmodule UrlShortener.ShortenedUrl do
 
   @primary_key {:slug, :string, []}
 
+  @derive {Phoenix.Param, key: :slug}
+
   @allowed_schemes ["http", "https"]
 
   # List of fobidden hosts:
@@ -27,8 +29,6 @@ defmodule UrlShortener.ShortenedUrl do
     |> cast(params, [:original_url])
     |> validate_required([:original_url])
     |> validate_original_url()
-    |> unique_constraint(:original_url, name: :shortened_urls_pkey)
-    |> unique_constraint(:slug)
     |> prepare_changes(fn changeset ->
       insert_slug(changeset)
     end)
