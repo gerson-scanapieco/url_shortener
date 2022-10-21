@@ -7,7 +7,7 @@ services:
     depends_on:
       - db
     ports:
-      - "4000:4000"
+      - "8080:8080"
 
   db:
     image: postgres:15.0-alpine3.16

@@ -1,0 +1,44 @@
+# URL Shortener Exercise
+
+URL shortener application, in the same vein as [bitly](https://bitly.com) and [tinyurl](https://tinyurl.com/app). It allow users to reduce otherwise
+lengthy URLs into smaller and more manageable ones, making it easier to share them in social networks, or reference them in documents.
+
+## How it works
+
+Users can input their URLs into the application's main page form and be presented with a shortened version of it. Accessing this new link will automatically
+redirect the browser to the original URL.
+
+## Design considerations
+
+Some design decisions were made to increase the app's performance, security and decrease the development time:
+
+* It is not allowed to shorten a link already shorted. The reason is to avoid potential redirect loops.
+* The shortening algorithm is deterministic, i.e. the same original URL will result in the same shortened URL. This will save space in the database, by avoiding
+persisting the same original URL multiple times.
+* Shortened links will be cached in memory for some time. This will result in less load in the database, by avoiding reaching it every single time we want to
+retrieve a shortened URL. I had a few assumptions about the usage pattern in mind when I considered adding the cache:
+  . new shortened URLs are more likely to be accessed than old ones
+  . newly shortened URLs can suffer from spikes in accesses - specially true for URLs shared on social media
+  . given that adding in-memory cache is relatively easy in Elixir, I decided to have it from the get-go and not risk overloading the database.
+* I decided to use Postgres as the database because of my familiarity with it, and its robustness and performance. I expect it to handle medium-large
+workloads just fine. Depending on how much the table size grows, we might consider changing DBs eventually, but in my experience PG will give us some good
+headroom.
+* I decided to keep all shortened URLs in the database forever. In a real-world scenario, we might consider removing the URLs after some fixed amount of time, of after
+it being inactive for some period of time. That would save database space and decrease infra-structure costs, but have implications on the product usecases.
+* The front-end is pretty spartan right now. I decided to keep it simple so I could focus my time in the back-end. Under normal circunstances, I would have gave it more
+care and used a CSS framework like Tailwind CSS. To be fair, I believe that a server-side rendered app in this case does not add much to the overrall user experience, so I would
+defer using an SPA unless explicitly required by the product folks.
+* I don't consider this app to be production ready yet. There are no logs and no instrumentation in place. I decided to not add them for the exercise, but in a real-world
+scenario we should monitor things like:
+  . CPU usage
+  . RAM usage
+  . p50, p75, p90, p95, p99 response times
+  . total requests by path/verb
+  . cache hits/misses, total cache size
+  . DB CPU usage
+  . DB RAM and DISK usage
+  . DB open connections
+
+## Installation
+
+Please refer to README.md for the setup instructions.

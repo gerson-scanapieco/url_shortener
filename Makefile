@@ -24,7 +24,7 @@ db-setup: env dependencies-up
 docker-build:
 	docker build --tag url_shortener:release .
 
-docker-run: dependencies-up
+docker-run: docker-build dependencies-up
 	docker compose up -d url_shortener
 
 # `make setup` will be used after cloning or downloading to fulfill
