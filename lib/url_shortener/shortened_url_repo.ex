@@ -19,17 +19,16 @@ defmodule UrlShortener.ShortenedUrlRepo do
   end
 
   def create_shortened_url(attrs \\ %{}) do
-    try do
-      ShortenedUrl.changeset(attrs)
-      |> Repo.insert()
-    rescue
-      Ecto.ConstraintError ->
-        slug = ShortenedUrl.generate_slug(attrs["original_url"])
-        get_shortened_url(slug)
-    end
+    ShortenedUrl.changeset(attrs)
+    |> Repo.insert()
+
+  rescue
+    Ecto.ConstraintError ->
+      slug = ShortenedUrl.generate_slug(attrs["original_url"])
+      get_shortened_url(slug)
   end
 
-  def count_shortened_url() do
+  def count_shortened_url do
     Repo.aggregate(ShortenedUrl, :count)
   end
 end

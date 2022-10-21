@@ -11,27 +11,36 @@ defmodule UrlShortenerWeb.ShortenedUrlController do
   end
 
   def create(conn, %{"shortened_url" => shortened_url_params}) do
-    with {:ok, shortened_url} <- ShortenedUrlRepo.create_shortened_url(shortened_url_params) do
-      conn
-      |> put_flash(:info, "Shortened url created successfully")
-      |> redirect(to: Routes.shortened_url_path(conn, :show, shortened_url.slug))
-    else
+    case ShortenedUrlRepo.create_shortened_url(shortened_url_params) do
+      {:ok, shortened_url} ->
+        conn
+        |> put_flash(:info, "Shortened url created successfully")
+        |> redirect(to: Routes.shortened_url_path(conn, :show, shortened_url.slug))
+
       {:error, %Ecto.Changeset{} = changeset} ->
         conn
         |> put_status(422)
         |> render("new.html", changeset: changeset)
+
+      error -> error
     end
   end
 
   def show(conn, %{"id" => slug}) do
-    with {:ok, shortened_url} <- ShortenedUrlRepo.get_shortened_url(slug) do
-      render(conn, "show.html", shortened_url: shortened_url)
+    case ShortenedUrlRepo.get_shortened_url(slug) do
+      {:ok, shortened_url} ->
+        render(conn, "show.html", shortened_url: shortened_url)
+
+      error -> error
     end
   end
 
   def redirection(conn, %{"slug" => slug}) do
-    with {:ok, shortened_url} <- ShortenedUrlRepo.get_shortened_url(slug) do
-      redirect(conn, external: shortened_url.original_url)
+    case ShortenedUrlRepo.get_shortened_url(slug) do
+      {:ok, shortened_url} ->
+        redirect(conn, external: shortened_url.original_url)
+
+      error -> error
     end
   end
 end

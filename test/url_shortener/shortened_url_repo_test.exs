@@ -33,13 +33,14 @@ defmodule UrlShortener.ShortenedUrlRepoTest do
       {:ok, _} = ShortenedUrlRepo.get_shortened_url(shortened_url.slug)
 
       assert UrlShortener.Cache.count_all() == 1
+
       assert {:ok,
-        %UrlShortener.ShortenedUrl{
-          slug: "uVYO8Ze0JHE5AtCxkMWPnw",
-          original_url: "http://dummy.com",
-          inserted_at: _,
-          updated_at: _
-        }} = UrlShortener.Cache.get({ShortenedUrl, shortened_url.slug})
+              %UrlShortener.ShortenedUrl{
+                slug: "uVYO8Ze0JHE5AtCxkMWPnw",
+                original_url: "http://dummy.com",
+                inserted_at: _,
+                updated_at: _
+              }} = UrlShortener.Cache.get({ShortenedUrl, shortened_url.slug})
     end
   end
 

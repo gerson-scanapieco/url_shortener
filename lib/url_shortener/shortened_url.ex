@@ -47,13 +47,14 @@ defmodule UrlShortener.ShortenedUrl do
 
   defp validate_original_url(changeset) do
     validate_change(changeset, :original_url, fn :original_url, original_url ->
-      with {:ok, url} <- URI.new(original_url) do
-        cond do
-          url.scheme not in @allowed_schemes -> [original_url: "must be HTTP or HTTPS"]
-          String.match?(url.host, @forbidden_hosts) -> [original_url: "is not a valid URL"]
-          true -> []
-        end
-      else
+      case URI.new(original_url) do
+        {:ok, url} ->
+          cond do
+            url.scheme not in @allowed_schemes -> [original_url: "must be HTTP or HTTPS"]
+            String.match?(url.host, @forbidden_hosts) -> [original_url: "is not a valid URL"]
+            true -> []
+          end
+
         _ -> [original_url: "is not a valid URL"]
       end
     end)
