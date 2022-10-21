@@ -15,9 +15,8 @@ defmodule UrlShortener.Application do
       # Start the PubSub system
       {Phoenix.PubSub, name: UrlShortener.PubSub},
       # Start the Endpoint (http/https)
-      UrlShortenerWeb.Endpoint
-      # Start a worker by calling: UrlShortener.Worker.start_link(arg)
-      # {UrlShortener.Worker, arg}
+      UrlShortenerWeb.Endpoint,
+      {UrlShortener.Cache, []}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

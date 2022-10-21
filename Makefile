@@ -1,6 +1,6 @@
 .PHONY: $(MAKECMDGOALS)
 
-LOCAL_DOTENV := $(shell cat .env 2> /dev/null | sed "s/\#.*$$//")
+LOCAL_ENV := $(shell cat .env 2> /dev/null | sed "s/\#.*$$//")
 
 elixir-install:
 	asdf install

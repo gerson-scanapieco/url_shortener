@@ -1,11 +1,16 @@
 defmodule UrlShortener.ShortenedUrlRepo do
+  use Nebulex.Caching
+
   @moduledoc """
   The ShortenedUrls repository module, responsible for
   acessing ShortenedUrls in the database.
   """
 
-  alias UrlShortener.{Repo, ShortenedUrl}
+  alias UrlShortener.{Cache, Repo, ShortenedUrl}
 
+  @cache_ttl :timer.minutes(1)
+
+  @decorate cacheable(cache: Cache, key: {ShortenedUrl, slug}, opts: [ttl: @cache_ttl])
   def get_shortened_url(slug) do
     case Repo.get(ShortenedUrl, slug) do
       nil -> {:error, :not_found}

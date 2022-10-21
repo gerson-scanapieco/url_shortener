@@ -3,6 +3,10 @@ defmodule UrlShortener.ShortenedUrlRepoTest do
 
   alias UrlShortener.{ShortenedUrl, ShortenedUrlRepo}
 
+  setup do
+    on_exit(fn -> UrlShortener.Cache.delete_all() end)
+  end
+
   describe "get_shortened_url/1" do
     test "returns the ShortenedUrl by the given slug" do
       {:ok, shortened_url} =
@@ -17,6 +21,25 @@ defmodule UrlShortener.ShortenedUrlRepoTest do
 
     test "returns :not_found error when the ShortenedUrl is not found" do
       assert ShortenedUrlRepo.get_shortened_url("inexistent_slug") == {:error, :not_found}
+    end
+
+    test "caches returned entries" do
+      assert UrlShortener.Cache.count_all() == 0
+
+      {:ok, shortened_url} =
+        ShortenedUrlRepo.create_shortened_url(%{"original_url" => "http://dummy.com"})
+
+      {:ok, _} = ShortenedUrlRepo.get_shortened_url(shortened_url.slug)
+      {:ok, _} = ShortenedUrlRepo.get_shortened_url(shortened_url.slug)
+
+      assert UrlShortener.Cache.count_all() == 1
+      assert {:ok,
+        %UrlShortener.ShortenedUrl{
+          slug: "uVYO8Ze0JHE5AtCxkMWPnw",
+          original_url: "http://dummy.com",
+          inserted_at: _,
+          updated_at: _
+        }} = UrlShortener.Cache.get({ShortenedUrl, shortened_url.slug})
     end
   end
 

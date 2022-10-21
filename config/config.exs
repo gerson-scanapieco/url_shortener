@@ -17,6 +17,18 @@ config :url_shortener, UrlShortenerWeb.Endpoint,
   pubsub_server: UrlShortener.PubSub,
   live_view: [signing_salt: "I+vYLJNG"]
 
+# Cache configuration
+#
+# See https://hexdocs.pm/nebulex/getting-started.html#adding-nebulex-to-an-application for instructions
+# Also see https://github.com/cabol/nebulex/blob/v2.4.1/lib/nebulex/adapters/local.ex for the configuration docs
+config :url_shortener, UrlShortener.Cache,
+  backend: :ets,
+  gc_interval: :timer.hours(1),
+  # 25MB in bytes,
+  allocated_memory: 26_214_400,
+  gc_cleanup_min_timeout: :timer.seconds(10),
+  gc_cleanup_max_timeout: :timer.minutes(10)
+
 # Configures the mailer
 #
 # By default it uses the "Local" adapter which stores the emails
