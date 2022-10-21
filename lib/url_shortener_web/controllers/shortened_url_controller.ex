@@ -22,7 +22,8 @@ defmodule UrlShortenerWeb.ShortenedUrlController do
         |> put_status(422)
         |> render("new.html", changeset: changeset)
 
-      error -> error
+      error ->
+        error
     end
   end
 
@@ -31,7 +32,8 @@ defmodule UrlShortenerWeb.ShortenedUrlController do
       {:ok, shortened_url} ->
         render(conn, "show.html", shortened_url: shortened_url)
 
-      error -> error
+      error ->
+        error
     end
   end
 
@@ -40,7 +42,8 @@ defmodule UrlShortenerWeb.ShortenedUrlController do
       {:ok, shortened_url} ->
         redirect(conn, external: shortened_url.original_url)
 
-      error -> error
+      error ->
+        error
     end
   end
 end

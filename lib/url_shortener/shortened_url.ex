@@ -55,7 +55,8 @@ defmodule UrlShortener.ShortenedUrl do
             true -> []
           end
 
-        _ -> [original_url: "is not a valid URL"]
+        _ ->
+          [original_url: "is not a valid URL"]
       end
     end)
   end

@@ -10,7 +10,6 @@ config :url_shortener, UrlShortener.Repo,
   show_sensitive_data_on_connection_error: true,
   pool_size: 10
 
-
 port = String.to_integer(System.get_env("PORT") || "4000")
 
 # For development, we disable any cache and enable
