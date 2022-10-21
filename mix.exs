@@ -50,7 +50,8 @@ defmodule UrlShortener.MixProject do
       {:jason, "~> 1.2"},
       {:plug_cowboy, "~> 2.5"},
       {:nebulex, "~> 2.4"},
-      {:decorator, "~> 1.4"}
+      {:decorator, "~> 1.4"},
+      {:credo, "~> 1.6", only: [:dev, :test], runtime: false}
     ]
   end
 
