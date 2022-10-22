@@ -10,6 +10,11 @@ defmodule UrlShortener.ShortenedUrl do
 
   @allowed_schemes ["http", "https"]
 
+  # Arbitrary length for a maximum URL. Although URLs can technically be huge,
+  # we set this limit so we are less vulnerable to attacks spamming long URLs
+  # and keep things manageable.
+  @max_original_url_length 2048
+
   # List of fobidden hosts:
   #
   # localhost -> it does not make sense to shorten a local-only URL
@@ -28,7 +33,8 @@ defmodule UrlShortener.ShortenedUrl do
     %ShortenedUrl{}
     |> cast(params, [:original_url])
     |> validate_required([:original_url])
-    |> validate_original_url()
+    |> validate_length(:original_url, max: @max_original_url_length)
+    |> validate_original_url_format()
     |> prepare_changes(fn changeset ->
       insert_slug(changeset)
     end)
@@ -45,7 +51,7 @@ defmodule UrlShortener.ShortenedUrl do
     |> Base.url_encode64(padding: false)
   end
 
-  defp validate_original_url(changeset) do
+  defp validate_original_url_format(changeset) do
     validate_change(changeset, :original_url, fn :original_url, original_url ->
       case URI.new(original_url) do
         {:ok, url} ->

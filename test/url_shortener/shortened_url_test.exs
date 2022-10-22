@@ -45,6 +45,14 @@ defmodule UrlShortener.ShortenedUrlTest do
         assert errors_on(changeset) == %{original_url: ["can't be blank"]}
       end
     end
+
+    test "is invalid when original_url is longer than 2048 chars" do
+      original_url = "http://google.com/" <> String.duplicate("a", 2048)
+      changeset = ShortenedUrl.changeset(%{original_url: original_url})
+      refute changeset.valid?
+
+      assert errors_on(changeset) == %{original_url: ["should be at most 2048 character(s)"]}
+    end
   end
 
   describe "changeset/1" do
